@@ -26,7 +26,7 @@ from io import BytesIO
 #load our saved model
 import torch
 from torch.autograd import Variable
-from network_model import model_cnn
+from network_model import model_cnn, TunedResnet50
 
 import cv2
 
@@ -135,7 +135,8 @@ if __name__ == '__main__':
 
     print("loading the model...")
     #load model
-    model = model_cnn().cpu()
+    # model = model_cnn().cpu()
+    model = TunedResnet50().cpu()
     model.load_state_dict(torch.load(args.model_weights, map_location=torch.device('cpu')))
     model.eval()
 
