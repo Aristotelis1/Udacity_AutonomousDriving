@@ -62,31 +62,27 @@ class model_cnn(nn.Module):
         return input
 
 class TunedResnet50(nn.Module):
-    """
-    * @brief Initializes the class varaibles
-    * @param None.
-    * @return None.
-    """
     def __init__(self):
         super().__init__()
         self.resnet50 = models.resnet50(weights="IMAGENET1K_V1")
-
-        self.elu = nn.ELU()
-        self.dropout = nn.Dropout(p=0.5)
-        self.fc0 = nn.Linear(1000,100)
-        self.fc1 = nn.Linear(100, 10)
-        self.fc2 = nn.Linear(10, 1)
-    """ 
-    * @brief Function to build the model.
-    * @parma The image to train.
-    * @return The trained prediction network.
-    """
+        self.resnet50.fc = nn.Sequential(
+            nn.Dropout(p=0.5),
+            nn.Linear(2048,100),
+            nn.ELU(),
+            nn.Dropout(p=0.5),
+            nn.Linear(100, 10),
+            nn.ELU(),
+            nn.Dropout(p=0.5),
+            nn.Linear(10, 1),
+            nn.ELU(),
+        )
     def forward(self, input):
         input = self.resnet50(input)
-        input = self.dropout(input)
-        input = self.elu(self.fc0(input))
-        input = self.dropout(input)
-        input = self.elu(self.fc1(input))
-        input = self.dropout(input)
-        input = self.elu(self.fc2(input))
         return input
+    
+    def get_fc_layers(self,):
+        return self.resnet50.fc.parameters()
+    
+    def get_main_layers(self,):
+        return [param for name, param in self.resnet50.named_parameters() if 'fc' not in name]
+        

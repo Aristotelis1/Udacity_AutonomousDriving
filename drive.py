@@ -69,7 +69,7 @@ def telemetry(sid, data):
             #image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             # predict the steering angle for the image
             img = Variable(torch.FloatTensor([img])).permute(0,3,1,2)
-
+            img = img / 255
             steering_angle_throttle = model(img)
             #steering_angle = steering_angle_throttle[0].item()
             #throttle = steering_angle_throttle[1].item()
