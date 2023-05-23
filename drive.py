@@ -26,7 +26,7 @@ from io import BytesIO
 #load our saved model
 import torch
 from torch.autograd import Variable
-from network_model import model_cnn, TunedResnet50
+from network_model import TunedResnet50, NvidiaModel
 
 import cv2
 
@@ -42,7 +42,7 @@ model = None
 prev_image_array = None
 
 #set min/max speed for our autonomous car
-MAX_SPEED = 25
+MAX_SPEED = 20
 MIN_SPEED = 10
 
 #and a speed limit
@@ -135,8 +135,11 @@ if __name__ == '__main__':
 
     print("loading the model...")
     #load model
-    # model = model_cnn().cpu()
-    model = TunedResnet50().cpu()
+    # model = TunedResnet50()
+    model = NvidiaModel()
+    # only if trained using nn.DataParallel
+    model = torch.nn.DataParallel(model)
+    
     model.load_state_dict(torch.load(args.model_weights, map_location=torch.device('cpu')))
     model.eval()
 

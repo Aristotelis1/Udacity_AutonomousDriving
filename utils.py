@@ -61,6 +61,7 @@ def rgb2yuv(image):
 def preprocess(image):
     image = crop(image)
     image = resize(image)
+    # image = cv2.GaussianBlur(image, (3,3), 0)
     image = rgb2yuv(image)
     return image
 
