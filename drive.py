@@ -26,7 +26,7 @@ from io import BytesIO
 #load our saved model
 import torch
 from torch.autograd import Variable
-from network_model import TunedResnet50, NvidiaModel
+from network_model import TunedResnet50, NvidiaModel, NetworkLight
 
 import cv2
 
@@ -63,12 +63,15 @@ def telemetry(sid, data):
         # The current image from the center camera of the car
         image = Image.open(BytesIO(base64.b64decode(data["image"])))
         img = np.asarray(image)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img = utils.preprocess(img)
+        # img = utils.canny_edge_detection(img)
         try:
-            # from PIL image to numpy array
-            #image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             # predict the steering angle for the image
-            img = Variable(torch.FloatTensor([img])).permute(0,3,1,2)
+            # img = Variable(torch.FloatTensor([img])).permute(0,3,1,2)
+            img = torch.tensor(img)
+            img = torch.unsqueeze(img, dim=0)
+            img = img.permute(0, 3, 1, 2)
             img = img / 255
             steering_angle_throttle = model(img)
             #steering_angle = steering_angle_throttle[0].item()
@@ -136,9 +139,10 @@ if __name__ == '__main__':
     print("loading the model...")
     #load model
     # model = TunedResnet50()
+    # model = NetworkLight()
     model = NvidiaModel()
     # only if trained using nn.DataParallel
-    model = torch.nn.DataParallel(model)
+    # model = torch.nn.DataParallel(model)
     
     model.load_state_dict(torch.load(args.model_weights, map_location=torch.device('cpu')))
     model.eval()

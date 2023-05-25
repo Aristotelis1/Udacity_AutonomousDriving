@@ -17,9 +17,9 @@ class TunedResnet50(nn.Module):
     def __init__(self):
         super().__init__()
         self.resnet50 = models.resnet50(weights="IMAGENET1K_V1")
-        self.resnet50.fc = nn.Sequential(
+        self.fc = nn.Sequential(
             nn.Dropout(p=0.5),
-            nn.Linear(2048,512),
+            nn.Linear(1000,512),
             nn.ELU(),
             nn.Dropout(p=0.5),
             nn.Linear(512, 256),
@@ -29,10 +29,20 @@ class TunedResnet50(nn.Module):
             nn.ELU(),
             nn.Dropout(p=0.5),
             nn.Linear(64, 1),
-            nn.ELU(),
-        )
+            # nn.ELU(),
+            )
+        # Freeze the first 45 layers
+        n = 45  # Specify the number of layers to freeze
+
+        for idx, (name, param) in enumerate(self.resnet50.named_parameters()):
+            if idx < n:
+                param.requires_grad = False
+            else:
+                break
+
     def forward(self, input):
         input = self.resnet50(input)
+        input = self.fc(input)
         return input
     
     def get_fc_layers(self,):
@@ -77,3 +87,30 @@ class NvidiaModel(nn.Module):
     def forward(self, input):
         input = self.nvidia(input)
         return input
+
+
+class NetworkLight(nn.Module):
+
+    def __init__(self):
+        super(NetworkLight, self).__init__()
+        self.conv_layers = nn.Sequential(
+            nn.Conv2d(3, 24, 3, stride=2),
+            nn.ELU(),
+            nn.Conv2d(24, 48, 3, stride=2),
+            nn.MaxPool2d(4, stride=4),
+            nn.Dropout(p=0.25)
+        )
+        self.linear_layers = nn.Sequential(
+            nn.Linear(in_features=48*4*19, out_features=50),
+            nn.ELU(),
+            nn.Linear(in_features=50, out_features=10),
+            nn.Linear(in_features=10, out_features=1)
+        )
+        
+
+    def forward(self, input):
+        input = input.view(input.size(0), 3, 70, 320)
+        output = self.conv_layers(input)
+        output = output.view(output.size(0), -1)
+        output = self.linear_layers(output)
+        return output
