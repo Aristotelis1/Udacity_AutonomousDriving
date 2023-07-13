@@ -53,6 +53,20 @@ def resize(image):
 def rgb2yuv(image):
     return cv2.cvtColor(image, cv2.COLOR_RGB2YUV)
 
+def canny_edge_detection(img):
+    # Convert the image to grayscale
+    gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # Apply Gaussian blurring
+    blurred_image = cv2.GaussianBlur(gray_image, (5, 5), 0)
+
+    # Apply Canny edge detection
+    edges = cv2.Canny(blurred_image, 50, 150)
+
+    # Combine edges with original image
+    result = cv2.bitwise_and(img, img, mask=edges)
+    
+    return result
 """
 * @brief Function to run the preprocess of the images.
 * @param The images from the dataset
@@ -61,6 +75,7 @@ def rgb2yuv(image):
 def preprocess(image):
     image = crop(image)
     image = resize(image)
+    # image = cv2.GaussianBlur(image, (3,3), 0)
     image = rgb2yuv(image)
     return image
 
