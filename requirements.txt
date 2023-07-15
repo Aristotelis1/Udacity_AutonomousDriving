@@ -13,9 +13,10 @@ seaborn
 pandas
 imageio
 moviepy
-tensorflow
 torch
 torchsummary
+torchvision
 tensorboard_logger
 python-engineio==3.13.2 
 python-socketio==4.6.0 
+cryptography
