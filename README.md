@@ -20,5 +20,6 @@ To run the code please run the following line of code
 
 ### Results
 Small Clip:
-https://github.com/Aristotelis1/Udacity_AutonomousDriving/assets/8685096/f95d1e41-a6f3-4fe2-90b0-659f018c3971
 
+
+https://github.com/Aristotelis1/Udacity_AutonomousDriving/assets/8685096/f95d1e41-a6f3-4fe2-90b0-659f018c3971
