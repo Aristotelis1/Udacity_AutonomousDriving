@@ -1,12 +1,3 @@
-
-"""
-  *  @copyright (c) 2020 Charan Karthikeyan P V, Nagireddi Jagadesh Nischal
-  *  @file    network_model.py
-  *  @author  Charan Karthikeyan P V, Nagireddi Jagadesh Nischal
-  *
-  *  @brief Class declaration for building the network model.  
- """
-
 import torch
 import torch.nn as nn
 from torchsummary import summary
