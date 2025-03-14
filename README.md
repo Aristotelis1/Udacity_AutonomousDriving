@@ -14,7 +14,7 @@ To run the code please run the following line of code
 
 ### Work
 
-- The already trained model used the NVIDIA model following their paper. The implementation can be found in `network_model.py`
+- The used model follows the NVIDIA's architecture following their paper. The implementation can be found in `network_model.py`
 - The model was trained only on the training track and tested on the test track
 - The model was trained using Google Colab and the work can be found in the notebook
 
